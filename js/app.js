@@ -16,8 +16,34 @@ const pageImage = document.getElementById("page");
 const nextBtn = document.getElementById("nextBtn");
 const prevBtn = document.getElementById("prevBtn");
 
+const loader = document.getElementById("loader");
+
 /* ==========
-   UPDATE UI
+   PRELOAD IMAGES
+========== */
+
+function preloadImages() {
+
+  const promises = pages.map((src) => {
+
+    return new Promise((resolve) => {
+
+      const img = new Image();
+
+      img.src = src;
+
+      img.onload = resolve;
+      img.onerror = resolve;
+
+    });
+
+  });
+
+  return Promise.all(promises);
+}
+
+/* ==========
+   UPDATE BUTTONS
 ========== */
 
 function updateButtons() {
@@ -58,7 +84,7 @@ function changePage(index) {
 }
 
 /* ==========
-   NEXT
+   NEXT PAGE
 ========== */
 
 nextBtn.addEventListener("click", () => {
@@ -70,7 +96,7 @@ nextBtn.addEventListener("click", () => {
 });
 
 /* ==========
-   PREVIOUS
+   PREVIOUS PAGE
 ========== */
 
 prevBtn.addEventListener("click", () => {
@@ -85,4 +111,13 @@ prevBtn.addEventListener("click", () => {
    INIT
 ========== */
 
-updateButtons();
+async function initViewer() {
+
+  await preloadImages();
+
+  loader.classList.add("hidden");
+
+  updateButtons();
+}
+
+initViewer();
